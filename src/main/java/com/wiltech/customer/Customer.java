@@ -1,23 +1,24 @@
 package com.wiltech.customer;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.*;
+
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-    private String contactName;
-    private String email;
-    private String phone;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "customer")
+    private List<Contact> contacts;
 
 
     public Long getId() {
@@ -36,28 +37,28 @@ public class Customer {
         this.name = name;
     }
 
-    public String getContactName() {
-        return contactName;
+    public List<Contact> getContacts() {
+        return contacts;
     }
 
-    public void setContactName(String contactName) {
-        this.contactName = contactName;
+    public void setContacts(List<Contact> contacts) {
+        this.contacts = contacts;
     }
 
-    public String getEmail() {
-        return email;
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Customer customer = (Customer) o;
+        return Objects.equals(id, customer.id) &&
+                Objects.equals(name, customer.name) &&
+                Objects.equals(contacts, customer.contacts);
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, contacts);
     }
 
     @Override
@@ -65,27 +66,7 @@ public class Customer {
         return "Customer{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", contactName='" + contactName + '\'' +
-                ", email='" + email + '\'' +
-                ", phone='" + phone + '\'' +
+                ", contacts=" + contacts +
                 '}';
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Customer customer = (Customer) o;
-        return Objects.equals(id, customer.id) &&
-                Objects.equals(name, customer.name) &&
-                Objects.equals(contactName, customer.contactName) &&
-                Objects.equals(email, customer.email) &&
-                Objects.equals(phone, customer.phone);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, contactName, email, phone);
-    }
-
 }
